@@ -19,7 +19,6 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from doc_app.utils.doc_generator import DocumentGenerator
-import pythoncom
 from functools import wraps
 logger = logging.getLogger(__name__)
 
@@ -261,7 +260,10 @@ def division_selection(request):
 
 @login_required_custom
 def generate_documents(request):
-    pythoncom.CoInitialize()  # For Windows COM objects
+    if sys.platform == "win32":
+        import pythoncom
+        pythoncom.CoInitialize()
+    
 
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
@@ -548,5 +550,5 @@ def generate_documents(request):
         logger.exception("Error generating combined document")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-    
+
 
