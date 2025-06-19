@@ -4,7 +4,7 @@ import uuid
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-
+import sys
 import time
 import logging
 from docx.enum.text import WD_ALIGN_PARAGRAPH
