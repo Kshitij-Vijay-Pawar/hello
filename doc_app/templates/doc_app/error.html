@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .error-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #e74c3c;
+            background-color: #fdecea;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #e74c3c;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>Error Generating Documents</h1>
+        <p>{{ error_message }}</p>
+        <p><a href="/">Return to Home Page</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Platform</title>
+    <style>
+     
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('{% static "Img/well.jpg" %}');
+            background-size: cover;
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .welcome-container {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.747);
+            border-radius: 15px;
+            padding: 20px 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin: 10px;
+        }
+
+
+        h1 {
+            color: #032845;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .welcome-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: #0b7219;
+        }
+
+        /* Button Styles */
+        .get-started-btn {
+            background: linear-gradient(90deg, #160e3f, #6b5ad4);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .get-started-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(107, 90, 212, 0.4);
+        }
+
+        /* Features Section */
+        .platform-features {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .feature:hover {
+            background-color: rgba(139, 120, 230, 0.1);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #05500f;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #063154;
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #8b78e6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .welcome-container {
+                max-width: 90%;
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .welcome-message {
+                font-size: 1rem;
+            }
+            
+            .get-started-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="welcome-container">
+        <h1>Welcome, <span class="user-name">{{ user.first_name|default:"Client" }}</span>!</h1>
+        
+        <div class="welcome-message">
+            We're excited to have you on board. Our platform helps you generate NIC code documents quickly and efficiently. 
+            Get started by clicking the button below.
+        </div>
+        
+        <a href="{% url 'login' %}" class="get-started-btn" id="getStartedBtn">Get Started</a>
+        
+        <div class="platform-features">
+            <div class="feature">
+                <div class="feature-icon">✓</div>
+                <div class="feature-text">
+                    <div class="feature-title">Easy Document Generation</div>
+                    <div class="feature-desc">Create professional documents in just a few clicks</div>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">✏</div>
+                <div class="feature-text">
+                    <div class="feature-title">Customizable Templates</div>
+                    <div class="feature-desc">Tailor documents to your specific needs</div>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">⏱</div>
+                <div class="feature-text">
+                    <div class="feature-title">Time-Saving</div>
+                    <div class="feature-desc">Complete in minutes what used to take hours</div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+    <script>
+        // Show loading spinner when Get Started is clicked
+        document.getElementById('getStartedBtn').addEventListener('click', function(e) {
+            // Only show loading if the link is valid
+            if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                document.getElementById('loadingOverlay').classList.add('active');
+            }
+        });
+
+        // Hide loading spinner when page finishes loading
+        window.addEventListener('load', function() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        });
+
+        // Fallback in case loading gets stuck
+        setTimeout(function() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }, 5000);
+    </script>
+</body>
+</html>

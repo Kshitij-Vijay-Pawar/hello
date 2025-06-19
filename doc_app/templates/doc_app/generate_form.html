@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Generator</title>
+</head>
+<body>
+    <h1>Generate New Document</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Generate Document</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Complete | System</title>
+    <style>
+        :root {
+            --primary-color: #52139a;
+            --secondary-color: #dcdaf9;
+            --light-bg: #f8faf9;
+            --dark-text: #215306;
+            --light-text: #05193e;
+            --success-color: #85d21a;
+            --button-primary: #6c5ce7;
+            --button-secondary: #a29bfe;
+            --button-danger: #ff7675;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-image: url('{% static "Img/sddh.jpg" %}');
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: var(--dark-text);
+            line-height: 1.6;
+            font-weight: bold;
+        }
+        
+        .processing-card {
+            background-color: rgba(255, 255, 255, 0.901);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(184, 106, 106, 0.1);
+            padding: 2.5rem;
+            width: 400px;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        h1 {
+            font-weight: 600;
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+        }
+        
+        .subtitle {
+            color: var(--light-text);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+        
+        .completed-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--success-color), #3a86ff);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+            animation: bounce 0.5s ease infinite alternate;
+        }
+        
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+        
+        .completion-text {
+            margin-top: 1rem;
+            color: var(--success-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .logo {
+            max-width: 150px;
+            max-height: 50px;
+            margin-top: 1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--button-primary), var(--button-secondary));
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--button-danger), #ff9e9e);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8rem;
+            color: rgba(9, 4, 69, 0.695);
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="processing-card">
+        <div class="completed-icon">✓</div>
+        <div class="card-header">
+            <h1>Download Complete</h1>
+            <div class="subtitle">Your files are ready</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="window.location.href='/'">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <button class="btn btn-danger" onclick="window.location.href='/logout'">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <footer style="color: #1bff63; font-size: 14px;">
+        © Bramha Intelligence Pvt. Ltd.
+    </footer>
+
+
+    <script>
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                let x = e.clientX - e.target.getBoundingClientRect().left;
+                let y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                let ripple = document.createElement('span');
+                ripple.style.left = ${x}px;
+                ripple.style.top = ${y}px;
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

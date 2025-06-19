@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIC Code Document Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('{% static "Img/lll.jpg" %}');
+            background-size: cover;
+            min-height: 100vh;
+            color: #333;
+
+            /* Centering with Flexbox */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 80vw;
+            background: rgba(255, 255, 255, 0.648);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+
+        h1 {
+            text-align: center;
+            color: #042356;
+            margin-bottom: 30px;
+            font-size: 25px;
+        }
+
+        .division-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .division-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .division-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .division-card h3 {
+            margin: 0;
+            color: #0d7a40;
+        }
+
+        .division-card p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+            color: #181c92;
+        }
+
+        .nic-list {
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .nic-item {
+            background: white;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nic-item:hover {
+            background: #f0f0f0;
+        }
+
+        .nic-code {
+            font-weight: bold;
+            color: #6b5ad4;
+            min-width: 70px;
+            margin-right: 15px;
+        }
+
+        .nic-desc {
+            flex-grow: 1;
+            font-size: 0.95em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload label {
+            background: #8b78e6;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+
+        .file-upload label:hover {
+            background: #6b5ad4;
+        }
+
+        .dual-input {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            background: linear-gradient(90deg, #8b78e6, #6b5ad4);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 90, 212, 0.4);
+        }
+
+        .back-btn {
+            background: #f5f5f5;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background: #e0e0e0;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <!-- Division Selection Page -->
+    <div id="division-page" class="container">
+        <h1>Select NIC Division</h1>
+        <div class="division-grid">
+            <button class="division-card" onclick="showNicPage(9, 'Mining Support Service Activities')">
+                <h3>Division 09</h3>
+                <p>Mining Support Services</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(10, 'Manufacture of Food Products')">
+                <h3>Division 10</h3>
+                <p>Food Manufacturing</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(11, 'Manufacture of Beverages')">
+                <h3>Division 11</h3>
+                <p>Beverage Manufacturing</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(12, 'Manufacture of Tobacco Products')">
+                <h3>Division 12</h3>
+                <p>Tobacco Manufacturing</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(13, 'Manufacture of Textiles')">
+                <h3>Division 13</h3>
+                <p>Textile Manufacturing</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(14, 'Manufacture of Wearing Apparel')">
+                <h3>Division 14</h3>
+                <p>Apparel Manufacturing</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(15, 'Manufacture of Leather and Related Products')">
+                <h3>Division 15</h3>
+                <p>Leather Products</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(16, 'Manufacture of Wood and Products of Wood and Cork')">
+                <h3>Division 16</h3>
+                <p>Wood Products</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(17, 'Manufacture of Paper and Paper Products')">
+                <h3>Division 17</h3>
+                <p>Paper Products</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(18, 'Printing and Reproduction of Recorded Media')">
+                <h3>Division 18</h3>
+                <p>Printing Services</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(19, 'Manufacture of Coke and Refined Petroleum Products')">
+                <h3>Division 19</h3>
+                <p>Petroleum Products</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(20, 'Manufacture of Chemicals and Chemical Products')">
+                <h3>Division 20</h3>
+                <p>Chemical Manufacturing</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(21, 'Manufacture of Pharmaceuticals, Medicinal Chemical and Botanical Products')">
+                <h3>Division 21</h3>
+                <p>Pharmaceuticals</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(22, 'Manufacture of Rubber and Plastics Products')">
+                <h3>Division 22</h3>
+                <p>Rubber/Plastics</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(23, 'Manufacture of Other Non-Metallic Mineral Products')">
+                <h3>Division 23</h3>
+                <p>Non-Metallic Minerals</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(24, 'Manufacture of Basic Metals')">
+                <h3>Division 24</h3>
+                <p>Basic Metals</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(25, 'Manufacture of Fabricated Metal Products, Except Machinery and Equipment')">
+                <h3>Division 25</h3>
+                <p>Fabricated Metal Products</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(26, 'Manufacture of Computer, Electronic and Optical Products')">
+                <h3>Division 26</h3>
+                <p>Electronics</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(27, 'Manufacture of Electrical Equipment')">
+                <h3>Division 27</h3>
+                <p>Electrical Equipment</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(28, 'Manufacture of Machinery and Equipment n.e.c.')">
+                <h3>Division 28</h3>
+                <p>Machinery</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(29, 'Manufacture of Motor Vehicles, Trailers and Semi-Trailers')">
+                <h3>Division 29</h3>
+                <p>Motor Vehicles</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(30, 'Manufacture of Other Transport Equipment')">
+                <h3>Division 30</h3>
+                <p>Transport Equipment</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(31, 'Manufacture of Furniture')">
+                <h3>Division 31</h3>
+                <p>Furniture</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(32, 'Other Manufacturing')">
+                <h3>Division 32</h3>
+                <p>Other Manufacturing</p>
+            </button>
+            <button class="division-card" onclick="showNicPage(33, 'Repair and Installation of Machinery and Equipment')">
+                <h3>Division 33</h3>
+                <p>Repair/Installation</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- NIC Code Selection Page -->
+    <div id="nic-page" class="container hidden">
+        <h1>Select NIC Code for <span id="division-name">Division 10</span></h1>
+        <div class="search-box">
+            <input type="text" placeholder="Search NIC codes..." id="nic-search">
+        </div>
+        <div class="nic-list" id="nic-list">
+            <!-- NIC codes will be dynamically inserted here -->
+        </div>
+        <button class="back-btn" onclick="showDivisionPage()">← Back</button>
+    </div>
+
+    <!-- Company Details Page -->
+    <div id="company-page" class="container hidden">
+        <h1>Enter Company Details</h1>
+        <form id="document-form" method="post" action="{% url 'generate_documents' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="nic-code" name="nic_code" value="">
+            <input type="hidden" id="division-name-hidden" name="division_name" value="">
+
+            <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" id="company-name" name="company-name">
+            </div>
+
+            <div class="form-group">
+                <label>Upload Logo</label>
+                <div class="file-upload">
+                    <input type="file" id="logo-upload" name="logo" accept="image/*">
+                    <label for="logo-upload">Choose File</label>
+                    <span id="file-name">No file chosen</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <textarea id="company-address" name="company-address"></textarea>
+            </div>
+
+            <div class="dual-input">
+                <div class="form-group">
+                    <label>Effective Date</label>
+                    <input type="date" id="EffDate" name="EffDate">
+                </div>
+                <div class="form-group">
+                    <label>DOC.NO</label>
+                    <input type="text" id="DocNO" name="DocNO">
+                </div>
+            </div>
+
+            <button type="submit">Generate Documents</button>
+            <button class="back-btn" onclick="showNicPage(currentDivision, currentDivisionName)">← Back</button>
+        </form>
+
+    </div>
+
+    <script>
+        // Global variables
+        let currentDivision = 0;
+        let currentDivisionName = "";
+        let selectedNicCode = "";
+
+        // NIC data from the PDF
+        const nicData = {
+            9: [
+                { code: "09101", desc: "Support activities for petroleum and natural gas mining" },
+                { code: "09102", desc: "Services incidental to off shore oil extraction" },
+                { code: "09103", desc: "Services incidental to on shore oil extraction" },
+                { code: "09104", desc: "Services incidental to off shore gas extraction" },
+                { code: "09900", desc: "Support activities for other mining and quarrying" }
+            ],
+            10: [
+                { code: "10101", desc: "Mutton-slaughtering, preparation" },
+                { code: "10102", desc: "Beef-slaughtering, preparation" },
+                { code: "10103", desc: "Pork-slaughtering, preparation" },
+                { code: "10104", desc: "Poultry and other slaughtering, preparation" },
+                { code: "10105", desc: "Preservation, Processing and canning of meat" },
+                { code: "10106", desc: "Production of hides and skins originating from slaughterhouses" },
+                { code: "10107", desc: "Rendering of lard and other edible fats of animal origin" },
+                { code: "10108", desc: "Production and processing of animal offal" },
+                { code: "10109", desc: "Production, processing and preserving of other meat and meat products n.e.c." },
+                { code: "10201", desc: "Sun-drying of fish" },
+                { code: "10202", desc: "Artificial dehydration of fish and sea food" },
+                { code: "10203", desc: "Radiation preservation of fish and similar food" },
+                { code: "10204", desc: "Processing and preserving of fish crustacean and similar foods" },
+                { code: "10205", desc: "Processing and canning of fish" },
+                { code: "10206", desc: "Processing and canning of frog legs" },
+                { code: "10207", desc: "Production of fishmeal for human consumption or animal feed" },
+                { code: "10209", desc: "Production, processing and preservation of other fish products n.e.c." },
+                { code: "10301", desc: "Sun-drying of fruit and vegetables" },
+                { code: "10302", desc: "Artificial dehydration of fruit and vegetables" },
+                { code: "10303", desc: "Radiation preservation of fruit and vegetables" },
+                { code: "10304", desc: "Manufacture of fruit or vegetable juices and their concentrates, squashes and powder" },
+                { code: "10305", desc: "Manufacture of sauces, jams, jellies and marmalades" },
+                { code: "10306", desc: "Manufacture of pickles, chutney etc." },
+                { code: "10307", desc: "Canning of fruits and vegetables" },
+                { code: "10308", desc: "Manufacture of potato flour & meals and prepared meals of vegetables" },
+                { code: "10309", desc: "Preservation of fruit and vegetables n.e.c." },
+                { code: "10401", desc: "Manufacture of hydrogenated oil and vanaspati ghee" },
+                { code: "10402", desc: "Manufacture of vegetable oils and fats excluding corn oil" },
+                { code: "10403", desc: "Manufacture of edible animal oils and fats" },
+                { code: "10404", desc: "Manufacture of fish oil" },
+                { code: "10405", desc: "Manufacture of non-edible animal oil and fats" },
+                { code: "10406", desc: "Manufacture of oil cakes & meals incl. residual products, e.g. Oleostearin, Palmstearin" },
+                { code: "10407", desc: "Manufacture of non-defatted flour or meals of oilseeds, oilnuts or kernels" },
+                { code: "10409", desc: "Manufacture of other vegetable oil, animal oil and fats n.e.c" },
+                { code: "10501", desc: "Manufacture of pasteurised milk whether or not in bottles/ polythene packs etc. (plain or flavoured)" },
+                { code: "10502", desc: "Manufacture of milk-powder, ice-cream powder and condensed milk except baby milk food" },
+                { code: "10503", desc: "Manufacture of baby milk foods" },
+                { code: "10504", desc: "Manufacture of cream, butter, cheese, curd, ghee, khoya etc." },
+                { code: "10505", desc: "Manufacture of ice-cream, kulfi etc." },
+                { code: "10509", desc: "Manufacture of other dairy products n.e.c." },
+                { code: "10611", desc: "Flour milling" },
+                { code: "10612", desc: "Rice milling" },
+                { code: "10613", desc: "Dal (pulses) milling" },
+                { code: "10614", desc: "Grain milling other than wheat, rice and dal" },
+                { code: "10615", desc: "Vegetable milling (production of flour or meal of dried leguminous vegetables(except dal), of roots or tubers, or of edible nuts)" },
+                { code: "10616", desc: "Manufacture of cereal breakfast foods obtained by roasting or swelling cereal grains" },
+                { code: "10617", desc: "Manufacture of flour mixes and prepared blended flour and dough for bread, cakes, biscuits" },
+                { code: "10618", desc: "Manufacture of other readymade mixed powders like idli, gulabjamun etc." },
+                { code: "10619", desc: "Other grain milling and processing n.e.c." },
+                { code: "10621", desc: "Manufacture of starches from rice, potatoes, maize etc." },
+                { code: "10622", desc: "Manufacture of sago and sago products" },
+                { code: "10623", desc: "Manufacture of glucose, glucose syrup, maltose etc." },
+                { code: "10624", desc: "Manufacture of gluten" },
+                { code: "10625", desc: "Manufacture of tapioca and tapioca substitutes prepared from starch" },
+                { code: "10626", desc: "Manufacture of corn oil" },
+                { code: "10629", desc: "Manufacture of other starch products n.e.c." },
+                { code: "10711", desc: "Manufacture of bread" },
+                { code: "10712", desc: "Manufacture of biscuits, cakes, pastries, rusks etc." },
+                { code: "10719", desc: "Manufacture of other bakery products n.e.c." },
+                { code: "10721", desc: "Manufacture or refining of sugar (sucrose) from sugarcane" },
+                { code: "10722", desc: "Manufacture of 'gur' from sugarcane" },
+                { code: "10723", desc: "Manufacture of 'gur' from other than sugarcane" },
+                { code: "10724", desc: "Manufacture of 'khandsari' sugar from sugarcane" },
+                { code: "10725", desc: "Manufacture of 'khandsari' sugar from other than sugarcane" },
+                { code: "10726", desc: "Manufacture of 'boora' and candy from sugarcane" },
+                { code: "10727", desc: "Manufacture of 'boora' and candy from other than sugarcane" },
+                { code: "10728", desc: "Manufacture of molasses" },
+                { code: "10729", desc: "Manufacture of sugar from other sources (juice of palm, suger beet etc.)" },
+                { code: "10731", desc: "Manufacture of cocoa products" },
+                { code: "10732", desc: "Manufacture of chocolate and chocolate confectionery" },
+                { code: "10733", desc: "Manufacture of sugar confectionery (except sweetmeats)" },
+                { code: "10734", desc: "Manufacture sweetmeats including dairy based sweetmeats" },
+                { code: "10735", desc: "Manufacture of chewing gum" },
+                { code: "10736", desc: "Preserving in sugar of fruit, nuts, fruit peels and other parts of plants" },
+                { code: "10739", desc: "Manufacture of other cocoa, chocolate, sugar confectionery products n.e.c." },
+                { code: "10740", desc: "Manufacture of macaroni, noodles, couscous and similar farinaceous products" },
+                { code: "10750", desc: "Manufacture of prepared meals and dishes" },
+                { code: "10791", desc: "Processing and blending of tea including manufacture of instant tea" },
+                { code: "10792", desc: "Coffee curing, roasting, grinding blending etc. and manufacturing of coffee products" },
+                { code: "10793", desc: "Processing of edible nuts" },
+                { code: "10794", desc: "Manufacture of malted foods including foods for infants and handicapped" },
+                { code: "10795", desc: "Grinding and processing of spices" },
+                { code: "10796", desc: "Manufacture of papads, appalam and similar food products" },
+                { code: "10797", desc: "Manufacture of vitaminised high protein flour, frying of dal and other cereals" },
+                { code: "10798", desc: "Processing of salt into food-grade salt, e.g. iodized salt" },
+                { code: "10799", desc: "Other semi-processed, processed or instant foods n.e.c. except farinaceous products and malted foods and manufacturing activities like manufacture of egg powder, sambar powder etc." },
+                { code: "10801", desc: "Manufacture of cattle feed" },
+                { code: "10802", desc: "Manufacture of poultry feed" },
+                { code: "10803", desc: "Manufacture of prepared feeds for pets, including dogs, cats, birds, fish etc." },
+                { code: "10809", desc: "Manufacture of other animal feeds n.e.c." }
+            ],
+            11: [
+                { code: "11011", desc: "Manufacture of distilled, potable, alcoholic beverages such as whisky, brandy, gin, 'mixed drinks' etc." },
+                { code: "11012", desc: "Manufacture of country liquor" },
+                { code: "11019", desc: "Distilling, rectifying and blending of spirits" },
+                { code: "11020", desc: "Manufacture of wines" },
+                { code: "11031", desc: "Manufacture of beer" },
+                { code: "11032", desc: "Manufacture of malt liquors other than beer" },
+                { code: "11033", desc: "Manufacture of malt" },
+                { code: "11039", desc: "Manufacture of malt liquors and malt n.e.c." },
+                { code: "11041", desc: "Manufacture of aerated drinks" },
+                { code: "11042", desc: "Manufacture of synthetic flavoured concentrates and syrups" },
+                { code: "11043", desc: "Manufacture of mineral water" },
+                { code: "11044", desc: "Manufacture of ice" },
+                { code: "11045", desc: "Manufacture of soft drinks" },
+                { code: "11049", desc: "Manufacture of other non-alcoholic beverages n.e.c." }
+            ],
+            12: [
+                { code: "12001", desc: "Stemming and redrying of tobacco" },
+                { code: "12002", desc: "Manufacture of bidi" },
+                { code: "12003", desc: "Manufacture of cigarettes, cigarette tobacco" },
+                { code: "12004", desc: "Manufacture of cigars and cheroots" },
+                { code: "12005", desc: "Manufacture of snuff" },
+                { code: "12006", desc: "Manufacture of zarda" },
+                { code: "12007", desc: "Manufacture of catechu(katha) and chewing lime" },
+                { code: "12008", desc: "Manufacture of pan masala and related products" },
+                { code: "12009", desc: "Manufacture of other tobacco products including chewing tobacco n.e.c." }
+            ],
+            13: [
+                { code: "13111", desc: "Preparation and spinning of cotton fiber including blended* cotton" },
+                { code: "13112", desc: "Preparation and spinning of silk fiber including blended* silk" },
+                { code: "13113", desc: "Preparation and spinning of wool, including other animal hair and blended* wool including other animal hair" },
+                { code: "13114", desc: "Preparation and spinning of man-made fiber including blended* man-made fiber" },
+                { code: "13119", desc: "Preparation and spinning of jute, mesta and other natural fibers including blended natural fibers n.e.c." },
+                { code: "13121", desc: "Weaving, manufacture of cotton and cotton mixture fabrics" },
+                { code: "13122", desc: "Weaving, manufacture of silk and silk mixture fabrics" },
+                { code: "13123", desc: "Weaving, manufacture of wool and wool mixture fabrics" },
+                { code: "13124", desc: "Weaving, manufacturing of man-made fiber and man-made mixture fabrics" },
+                { code: "13129", desc: "Weaving of jute, mesta and other natural fibers including blended natural fibers n.e.c." },
+                { code: "13131", desc: "Finishing of cotton and blended cotton textiles" },
+                { code: "13132", desc: "Finishing of silk and blended silk textiles" },
+                { code: "13133", desc: "Finishing of wool and blended wool textiles" },
+                { code: "13134", desc: "Finishing of man-made and blended man-made textiles" },
+                { code: "13135", desc: "Finishing of jute, mesta and other vegetable textiles fabrics" },
+                { code: "13136", desc: "Activity related to screen printing" },
+                { code: "13139", desc: "Other activities relating to finishing of textile n.e.c." },
+                { code: "13911", desc: "Manufacture of knitted and crocheted cotton fabrics" },
+                { code: "13912", desc: "Manufacture of knitted and crocheted woolen fabrics" },
+                { code: "13913", desc: "Manufacture of knitted and crocheted synthetic fabrics" },
+                { code: "13919", desc: "Manufacture of other knitted and crocheted fabrics" },
+                { code: "13921", desc: "Manufacture of curtains, bed covers and furnishings" },
+                { code: "13922", desc: "Manufacture of crocheted made up textile goods except apparel" },
+                { code: "13923", desc: "Manufacture of mosquito nets" },
+                { code: "13924", desc: "Manufacture of bedding, quilts pillows, sleeping bags etc." },
+                { code: "13925", desc: "Manufacture of tarpaulin" },
+                { code: "13926", desc: "Manufacture of blankets" },
+                { code: "13929", desc: "Manufacture of other made-up textile articles, except apparel n.e.c." },
+                { code: "13931", desc: "Manufacture of carpets and other floor coverings made of cotton" },
+                { code: "13932", desc: "Manufacture of carpets and other floor coverings made of wool" },
+                { code: "13933", desc: "Manufacture of carpets and other floor coverings made of silk" },
+                { code: "13934", desc: "Manufacture of carpets made of synthetic materials" },
+                { code: "13935", desc: "Manufacture of carpets, and other floor coverings made of jute, mesta and coir" },
+                { code: "13939", desc: "Manufacture of other floor coverings n.e.c." },
+                { code: "13941", desc: "Manufacture of thread, including thread ball making" },
+                { code: "13942", desc: "Manufacture of cordage or rope made of jute" },
+                { code: "13943", desc: "Manufacture of cordage or rope made of coir" },
+                { code: "13944", desc: "Manufacture of rope and cordage made of synthetic material" },
+                { code: "13945", desc: "Manufacture of knotted netting of twine, cordage or rope (other than mosquito net)" },
+                { code: "13946", desc: "Manufacture of tapes, newar and wicks" },
+                { code: "13949", desc: "Manufacture of other cordage or rope n.e.c." },
+                { code: "13991", desc: "Embroidery work and making of laces and fringes" },
+                { code: "13992", desc: "Zari work and other ornamental trimmings" },
+                { code: "13993", desc: "Manufacture of linolium and similar products" },
+                { code: "13994", desc: "Manufacture of gas mantles" },
+                { code: "13995", desc: "Manufacture of made-up canvas goods such tents, sails etc." },
+                { code: "13996", desc: "Manufacture of wadding of textile materials and articles of wadding such as sanitary napkins and tampoons" },
+                { code: "13997", desc: "Manufacture of metallised yarn or gimped yarn, rubber thread or cord covered with textile material, textile yarn or strip impregnated, covered or sheathed with rubber or plastic" },
+                { code: "13998", desc: "Manufacture of waterproof textile excluding tarpulin" },
+                { code: "13999", desc: "Manufacture of other textiles/textile products n.e.c." }
+            ],
+            14: [
+                { code: "14101", desc: "Manufacture of all types of textile garments and clothing accessories" },
+                { code: "14102", desc: "Manufacture of rain coats of waterproof textile fabrics or plastic sheetings" },
+                { code: "14103", desc: "Manufacture of hats, caps and other clothing accessories such as gloves, belts, ties, cravats, hairnets etc." },
+                { code: "14104", desc: "Manufacture of wearing apparel made of leather and substitutes of leather" },
+                { code: "14105", desc: "Custom tailoring" },
+                { code: "14109", desc: "Manufacture of wearing apparel n.e.c." },
+                { code: "14201", desc: "Manufacture of wearing apparel and clothing accessories made of fur" },
+                { code: "14202", desc: "Manufacture of fur and skin rugs and other similar articles" },
+                { code: "14209", desc: "Manufacture of other fur products n.e.c." },
+                { code: "14301", desc: "Manufacture of knitted or crocheted wearing apparel and other made-up articles directly into shape (pullovers, cardigans, jerseys, waistcoats and similar articles)" },
+                { code: "14309", desc: "Manufacture of other knitted and crocheted apparel including hosiery" }
+            ],
+            15: [
+                { code: "15111", desc: "Flaying and curing of raw hides and skins" },
+                { code: "15112", desc: "Tanning and finishing of sole leather" },
+                { code: "15113", desc: "Tanning and finishing of industrial leather" },
+                { code: "15114", desc: "Scraping, currying, tanning, bleaching, shearing and plucking and dyeing of fur skins and hides with the hair on" },
+                { code: "15115", desc: "Finishing of upper leather, lining leather and garment leather etc." },
+                { code: "15116", desc: "Embroidering and embossing of leather articles" },
+                { code: "15119", desc: "Other tanning, curing, finishing, embossing etc. of leather" },
+                { code: "15121", desc: "Manufacture of travel goods like suitcase, bags, holdalls etc." },
+                { code: "15122", desc: "Manufacture of purse, ladies' handbags, artistic leather presented articles and novelties" },
+                { code: "15123", desc: "Manufacture of saddlery and harness" },
+                { code: "15129", desc: "Manufacture of other consumer goods of leather and substitutes of leather n.e.c." },
+                { code: "15201", desc: "Manufacture of leather footwear such as shoes, sandals, chappals, leather-cum-rubber/plastic cloth sandles and chappals" },
+                { code: "15202", desc: "Manufacture of footwear made primarily of vulcalized or moulded rubber and plastic" },
+                { code: "15209", desc: "Manufacture of other footwear n.e.c." }
+            ],
+            16: [
+                { code: "16101", desc: "Sawing and planing of wood" },
+                { code: "16102", desc: "Manufacture of unassembled wooden flooring including parquet flooring" },
+                { code: "16103", desc: "Manufacture of wooden railway sleepers" },
+                { code: "16109", desc: "Activities related to saw milling and planing of wood n.e.c." },
+                { code: "16211", desc: "Manufacture of ply wood and veneer sheets" },
+                { code: "16212", desc: "Manufacture of particle board and fibreboard including densified wood" },
+                { code: "16213", desc: "Manufacture of flush doors and other boards or panels" },
+                { code: "16219", desc: "Manufacture of other plywood products n.e.c." },
+                { code: "16221", desc: "Manufacture of structural wooden goods [intended to be used primarily in the construction industry such as beams, rafters, roof struts, glue-laminated and metal connected, prefabricated wooden roof trusses, doors, windows, shutters and their frames, whether or not containing metal fittings, stairs, railings, wooden beadings and mouldings, shingles and shakes etc.]" },
+                { code: "16222", desc: "Manufacture of prefabricated buildings, or elements thereof, predominantly of wood" },
+                { code: "16229", desc: "Manufacture of builders' carpentry and joinery n.e.c." },
+                { code: "16231", desc: "Manufacture of wooden boxes, barrels, vats, tubs, packing cases etc." },
+                { code: "16232", desc: "Manufacture of plywood chests" },
+                { code: "16233", desc: "Manufacture of market basketry, grain storage bins and similar products made of bamboo or reed" },
+                { code: "16239", desc: "Manufacture of other wooden containers and products entirely or mainly of cane, rattan, bamboo, willow, fibre, leaves and grass n.e.c." },
+                { code: "16291", desc: "Manufacture of wooden industrial goods" },
+                { code: "16292", desc: "Manufacture of cork and cork products" },
+                { code: "16293", desc: "Manufacture of wooden agricultural implements" },
+                { code: "16294", desc: "Manufacture of various articles made of bamboo, cane and grass" },
+                { code: "16295", desc: "Manufacture of broomsticks" },
+                { code: "16296", desc: "Manufacture of articles made of palm leaf, dhak leaf, screw-pine leaf and khajoor leaf; articles of vegetables fibre etc." },
+                { code: "16297", desc: "Manufacture of products of pith and shalapith" },
+                { code: "16299", desc: "Manufacture of other wood products n.e.c." }
+            ],
+            17: [
+                { code: "17011", desc: "Manufacture of pulp" },
+                { code: "17012", desc: "Manufacture of news print" },
+                { code: "17013", desc: "Manufacture of paper and paper rolls not further processed" },
+                { code: "17014", desc: "Manufacture of packing paper" },
+                { code: "17015", desc: "Manufacture of other special purpose paper (excluding computer stationary)" },
+                { code: "17016", desc: "Manufacture of paper board, straw board" },
+                { code: "17017", desc: "Manufacture of hard board including false board and chip board" },
+                { code: "17019", desc: "Manufacture of other primary paper materials including composite paper and paper board n.e.c." },
+                { code: "17021", desc: "Manufacture of corrugated paper and paperboard" },
+                { code: "17022", desc: "Manufacturing of corrugated paper board containers" },
+                { code: "17023", desc: "Manufacture of card board boxes" },
+                { code: "17024", desc: "Manufacture of sacks and bags of paper" },
+                { code: "17029", desc: "Manufacture of other containers of paper and paperboard n.e.c." },
+                { code: "17091", desc: "Manufacture of computer paper" },
+                { code: "17092", desc: "Manufacture of paper cups, saucers, plates, hoops, cones and other similar products" },
+                { code: "17093", desc: "Manufacture of printing, writing and photocopying paper ready for use" },
+                { code: "17094", desc: "Manufacture of paper pulp articles other than containers (such as egg trays)" },
+                { code: "17095", desc: "Manufacture of file cover/file boards, and similar articles" },
+                { code: "17096", desc: "Manufacture of wall paper" },
+                { code: "17097", desc: "Manufacture of carbon paper & stationary items" },
+                { code: "17099", desc: "Manufacture of other paper products n.e.c." }
+            ],
+            18: [
+                { code: "18111", desc: "Printing of newspapers" },
+                { code: "18112", desc: "Printing of magazines and other periodicals, books and brochures, maps, atlases, posters etc." },
+                { code: "18113", desc: "Printing of postage stams, taxation stamps, cheques and other security papers" },
+                { code: "18114", desc: "Printing of bank notes, currency notes" },
+                { code: "18115", desc: "Printing directly onto textiles, flexographic plastic, glass, metal, wood and ceramics" },
+                { code: "18119", desc: "Other printing activities like screen printing other than textile n.e.c." },
+                { code: "18121", desc: "Book and other similar sheet binding on account of others" },
+                { code: "18122", desc: "Engraving, etching and block making etc." },
+                { code: "18129", desc: "Other service activities related to printing n.e.c." },
+                { code: "18200", desc: "Reproduction of recorded media" }
+            ],
+            19: [
+                { code: "19101", desc: "Production of coke and semi-coke products" },
+                { code: "19109", desc: "Manufacture of other coke oven products such as gas, crude coal and lignite tars etc." },
+                { code: "19201", desc: "Production of liquid and gaseous fuels, illuminating oils, lubricating oils or greases or other products from crude petroleum or bituminous minerals" },
+                { code: "19202", desc: "Manufacture of paraffin wax" },
+                { code: "19203", desc: "Bottling of LPG/CNG" },
+                { code: "19204", desc: "Manufacture of hard-coal and lignite fuel briquettes" },
+                { code: "19209", desc: "Manufacture of other petroleum n.e.c. (includes manufacture of petroleum jelly, micro-crystalline petroleum wax, slack wax, ozokerite, lignite wax, petroleum coke, petroleum bitumen and other residues of petroleum oils or of oils obtained from bituminous minerals)" }
+            ],
+            20: [
+                { code: "20111", desc: "Manufacture of liquefied or compressed inorganic industrial or medical gases (elemental gases, liquid or compressed air, refrigerant gases, mixed industrial gases etc.)" },
+                { code: "20112", desc: "Manufacture of inorganic acids except nitric acid" },
+                { code: "20113", desc: "Manufacture of tanning or dying extracts; tannings and their derivatives and colouring matter (including manufacture of indigo)" },
+                { code: "20114", desc: "Manufacture of dyes and pigments from any source in basic form or as concentrate" },
+                { code: "20115", desc: "Manufacture of turpentine and resins of vegetable origin" },
+                { code: "20116", desc: "Manufacture of basic chemical elements" },
+                { code: "20117", desc: "Manufacture of distilled water" },
+                { code: "20118", desc: "Manufacture of synthetic aromatic products" },
+                { code: "20119", desc: "Manufacture of organic and inorganic chemical compounds n.e.c." },
+                { code: "20121", desc: "Manufacture of urea and other organic fertilizers" },
+                { code: "20122", desc: "Manufacture of straight mixed, compound or complex inorganic fertilizers" },
+                { code: "20123", desc: "Manufacture of associated nitrogen products (nitric and sulphonitric acids, ammonia, ammonium chloride, ammonium carbonate, nitrites and nitrates of potassium)" },
+                { code: "20129", desc: "Manufacture of other fertilizers n.e.c." },
+                { code: "20131", desc: "Manufacture of plastic in primary forms (includes amino-resins, polyurethanes etc.)" },
+                { code: "20132", desc: "Manufacture of synthetic rubber in primary forms" },
+                { code: "20133", desc: "Manufacture of mixture of synthetic and natural or rubber like gums" },
+                { code: "20211", desc: "Manufacture of insecticides, rodenticides, fungicides, herbicides" },
+                { code: "20212", desc: "Manufacture of disinfectants (for agricultural and other use)" },
+                { code: "20213", desc: "Manufacture of anti-sprouting products, plant growth regulators" },
+                { code: "20219", desc: "Manufacture of other agrochemical products n.e.c." },
+                { code: "20221", desc: "Manufacture of paints and varnishes, enamels or lacquers" },
+                { code: "20222", desc: "Manufacture of prepared pigments, prepared opacifiers and prepared colours, vitrifiable enamels and glazes engobes and similar preparations of a kind used in the ceramic, enamelling or glass industry" },
+                { code: "20223", desc: "Manufacture of printing ink" },
+                { code: "20224", desc: "Manufacture of prepared pigments and other colouring matter of a kind used in the manufacture of paints or by artists or other painters" },
+                { code: "20229", desc: "Manufacture of caulking compounds and similar non-refractory filling or surfacing preparations, mastics, prepared paint or varnish removers, organic composite solvents and thinners and other related products n.e.c." },
+                { code: "20231", desc: "Manufacture of soap all forms" },
+                { code: "20232", desc: "Manufacture of cleaning and polishing products (preparations for perfuming or deodorizing rooms; artificial waxes and prepared waxes; polishes and creams for leather, wood, glass, metal etc.; scouring pastes and powders, including paper, wadding etc. coated or covered with these)" },
+                { code: "20233", desc: "Manufacture of detergent and similar washing agents excluding soap" },
+                { code: "20234", desc: "Manufacture of perfumes and cologne de-eau" },
+                { code: "20235", desc: "Manufacture of preparations for oral or dental hygiene (includes manufacture of toothpastes, toothpowder, mouthwash, oral, perfumes, dental fixative pastes and powders etc.)" },
+                { code: "20236", desc: "Manufacture of hair oil, shampoo, hair dye etc. (includes manufacture of shampoos, hair sprays, hair fixers, hair oils, hair creams, hair dyes and bleaches and preparations for permanent waving or straightening of the hair etc.)" },
+                { code: "20237", desc: "Manufacture of cosmetics and toileteries (includes manufacture of pre-shave, shaving or after shave preparations; personal deodorants and anti- respirants; perfumed bath salts and other bath preparations; beauty or make-up preparations and preparations for the care of the skin, other than medicaments; manicure and pedicure preparations etc.)" },
+                { code: "20238", desc: "Manufacture of 'agarbatti' and other preparations which operate by burning" },
+                { code: "20239", desc: "Manufacture of other perfumes and toilet preparations n.e.c." },
+                { code: "20291", desc: "Manufacture of matches" },
+                { code: "20292", desc: "Manufacture of explosives, ammunition and fire works" },
+                { code: "20293", desc: "Manufacture of essential oils; modification by chemical processes of oils and fats (e.g. by oxidation, polymerization etc.)" },
+                { code: "20294", desc: "Manufacture of photographic plates, films, sensitized paper and other sensitized unexposed materials,chemical preparations for photographic uses" },
+                { code: "20295", desc: "Manufacture of gelatine and its derivatives, resinoids, glues, prepared adhesives, including rubber-based glues and adhesives" },
+                { code: "20296", desc: "Manufacture of chemical elements and compounds doped for use in electronics" },
+                { code: "20297", desc: "Manufacture of chemical products or preparations of a kind used in the textiles, paper, leather and like industries" },
+                { code: "20299", desc: "Manufacture of various other chemical products n.e.c.(antiknock preparations, anti-freeze preparations, liquids for hydraulic transmission, composite diagnostic or laboratory reagents, writing or drawing ink, chemical substance used in manufacturing of pesticides and other chemical products)" },
+                { code: "20301", desc: "Manufacture of synthetic or artificial filament tow" },
+                { code: "20302", desc: "Manufacture of synthetic or artificial filament staple fibre not textured" },
+                { code: "20303", desc: "Manufacture of synthetic or artificial filament yarn, tenacity yarn whether or not textured including high tenacity yarn" },
+                { code: "20304", desc: "Manufacture of synthetic or artificial mono-filament or strip" }
+            ],
+            21: [
+                { code: "21001", desc: "Manufacture of medicinal substances used in the manufacture of pharmaceuticals: antibiotics, endocrine products, basic vitamins; opium derivatives; sulpha drugs; serums and plasmas; salicylic acid, its salts and esters; glycosides and vegetable alkaloids; chemically pure sugar etc." },
+                { code: "21002", desc: "Manufacture of allopathic pharmaceutical preparations" },
+                { code: "21003", desc: "Manufacture of 'ayurvedic' or 'unani' pharmaceutical preparation" },
+                { code: "21004", desc: "Manufacture of homoeopathic or biochemic pharmaceutical preparations" },
+                { code: "21005", desc: "Manufacture of veterinary preparations" },
+                { code: "21006", desc: "Manufacture of medical impregnated wadding, gauze, bandages, dressings, surgical gut string etc." },
+                { code: "21009", desc: "Manufacture of other pharmaceutical and botanical products n.e.c. like hina powder etc." }
+            ],
+            22: [
+                { code: "22111", desc: "Manufacture of rubber tyres and tubes for motor vehicles, motorcycles, scooters, three-wheelers, tractors and aircraft" },
+                { code: "22112", desc: "Manufacture of rubber tyres and tubes for cycles and cycle-rickshaws" },
+                { code: "22113", desc: "Retreading of tyres; replacing or rebuilding of tread on used pneumatic tyres" },
+                { code: "22119", desc: "Manufacture of rubber tyres and tubes n.e.c." },
+                { code: "22191", desc: "Manufacture of rubber plates, sheets, strips, rods, tubes, pipes, hoses and profile -shapes etc." },
+                { code: "22192", desc: "Manufacture of rubber conveyor or transmission belts or belting" },
+                { code: "22193", desc: "Manufacture of rubber contraceptives" },
+                { code: "22194", desc: "Manufacture of rubber balloons" },
+                { code: "22199", desc: "Manufacture of other rubber products n.e.c." },
+                { code: "22201", desc: "Manufacture of semi-finished of plastic products (plastic plates, sheets, blocks, film, foil, strip etc.)" },
+                { code: "22202", desc: "Manufacture of tableware, kitchenware and other household articles and toilet articles of plastic, including manufacture of vacuum flasks and other vacuum vessels" },
+                { code: "22203", desc: "Manufacture of plastic articles for the packing of goods (plastic bags, sacks, containers, boxes, cases, carboys, bottles etc.)" },
+                { code: "22204", desc: "Manufacture of bathing tubs, wash-basins, lavatory pans and covers, flushing cisterns and similar sanitary-ware of plastics" },
+                { code: "22205", desc: "Manufacture of travel goods of plastics (suitcase, vanity bags, holdalls and similar articles)" },
+                { code: "22206", desc: "Manufacture of spectacle frames of plastic" },
+                { code: "22207", desc: "Manufacture of moulded industrial accessories of plastics [including electrical insulating fittings of plastics]" },
+                { code: "22208", desc: "Manufacture of polymer/ synthetic / PVC water storage tanks" },
+                { code: "22209", desc: "Manufacture of other plastics products n.e.c." }
+            ],
+            23: [
+                { code: "23101", desc: "Manufacture of glass in primary or semi-manufactured forms (such as sheets & plate glass) including mirror sheets and wired, coloured, tinted, toughened or laminated glass" },
+                { code: "23102", desc: "Manufacture of glass fibre (including glass-wool) and yarn of glass fibre; nonwoven glass fabrics, mats, boards and similar non-woven products" },
+                { code: "23103", desc: "Manufacture of hollow glassware (bottles, jars etc.) for the conveyance or packing of goods" },
+                { code: "23104", desc: "Manufacture of laboratory or pharmaceutical glassware" },
+                { code: "23105", desc: "Manufacture of table or kitchen glassware" },
+                { code: "23106", desc: "Manufacture of glass bangles" },
+                { code: "23107", desc: "Manufacture of glass decoration pieces and glassware used in imitation jewellery" },
+                { code: "23109", desc: "Manufacture of other glassware/glass products: articles of glass used in construction such as glass blocks; clock or watch glasses, optical glass and optical glass elements not optically worked; and other glass products (including glass beads) n.e.c." },
+                { code: "23911", desc: "Manufacture of refractory mortars, concretes etc." },
+                { code: "23912", desc: "Manufacture of refractory bricks, blocks tiles and similar refractory ceramic constructional goods" },
+                { code: "23913", desc: "Manufacture of refractory ceramic products" },
+                { code: "23919", desc: "Manufacture of other refractory articles n.e.c." },
+                { code: "23921", desc: "Manufacture of bricks" },
+                { code: "23922", desc: "Manufacture of non-refractory ceramic sanitary wares: sinks, baths, water-closet pans, flushing cistern etc." },
+                { code: "23923", desc: "Manufacture of non-refractory ceramic pipes, conduits, guttering and pipe fittings" },
+                { code: "23929", desc: "Manufacture of other clay building materials" },
+                { code: "23931", desc: "Manufacture of articles of porcelain or china, earthenware, imitation porcelain or common pottery, including earthen statues" },
+                { code: "23932", desc: "Manufacture of ceramic tableware and other domestic or toilet articles" },
+                { code: "23933", desc: "Manufacture of statuettes and other ornamental ceramic articles" },
+                { code: "23934", desc: "Manufacture of electrical insulators and insulating fittings of ceramics" },
+                { code: "23935", desc: "Manufacture of ceramic laboratory, chemical and industrial products" },
+                { code: "23939", desc: "Manufacture of ceramic products n.e.c." },
+                { code: "23941", desc: "Manufacture of clinkers and cement" },
+                { code: "23942", desc: "Manufacture of portland cement, aluminous cement, slag cement and similar hydraulic cement" },
+                { code: "23943", desc: "Manufacture of asbestos cement" },
+                { code: "23944", desc: "Manufacture of quicklime, slaked lime and hydraulic lime (excluding chewing lime)" },
+                { code: "23945", desc: "Manufacture of plasters of calcined gypsum or calcined sulphate" },
+                { code: "23949", desc: "Manufacture of other cement and plaster n.e.c." },
+                { code: "23951", desc: "Manufacture of plaster statues and other plaster products" },
+                { code: "23952", desc: "Manufacture of articles articles of concrete, cement or artificial stone (tiles, bricks etc.)" },
+                { code: "23953", desc: "Manufacture of asbestos sheets" },
+                { code: "23954", desc: "Manufacture of R.C.C. bricks and blocks" },
+                { code: "23955", desc: "Manufacture of hume pipes and other pre-fabricated structural components of cement and/or concrete for building or civil engineering" },
+                { code: "23956", desc: "Manufacture of insulation boards of vegetable fibre, straw or wood waste, agglomerated with cement & other mineral binders" },
+                { code: "23959", desc: "Manufacture of other cement and asbestos cement products n.e.c." },
+                { code: "23960", desc: "Cutting, shaping and finishing of stone" },
+                { code: "23991", desc: "Manufacture of worked mica and mica products" },
+                { code: "23992", desc: "Manufacture of gypsum boards" },
+                { code: "23993", desc: "Manufacture of millstones, sharpening or polishing stones and natural or artificial abrasive products, including abrasive powder or grain on a base of textile material, paper, paper board or other material" },
+                { code: "23994", desc: "Manufacture of graphite products other than electrical articles" },
+                { code: "23999", desc: "Manufacture of other non-metallic mineral products n.e.c. (includes asbestos yarn and fabric, and articles of asbestos yarn and fabric such as clothing, headgear, footwear, cord, string, paper o felt; friction material with a basis of asbestos or other mineral substances or of cellulose including unmounted articles such as friction material; mineral insulating material (slag wool, rockwool and similar mineral pools, exfoliated vermiculite, expanded clays and similar insulating material); products of glass wool for heat-insulating; articles of asphalt or of similar material (e.g. coal tar pitch), gypsum and articles of other mineral substances)" }
+            ],
+            24: [
+                { code: "24101", desc: "Manufacture of pig iron and spiegeleisen in pigs, blocks or other primary forms" },
+                { code: "24102", desc: "Manufacture of direct reduction of iron (sponge iron) and other spongy ferrous products" },
+                { code: "24103", desc: "Manufacture of steel in ingots or other primary forms, and other semi-finished products of steel" },
+                { code: "24104", desc: "Manufacture of ferro-alloys" },
+                { code: "24105", desc: "Manufacture of hot-rolled and cold-rolled products of steel" },
+                { code: "24106", desc: "Manufacture of tube and tube fittings of basic iron and steel" },
+                { code: "24107", desc: "Manufacture of railway track materials (unassembled rails) of steel" },
+                { code: "24108", desc: "Manufacture of wire of steel by cold drawing or stretching" },
+                { code: "24109", desc: "Manufacture of other basic iron and steel n.e.c" },
+                { code: "24201", desc: "Manufacture of Copper from ore, and other copper products and alloys" },
+                { code: "24202", desc: "Manufacture of Aluminium from alumina and by other methods and products of aluminium and alloys" },
+                { code: "24203", desc: "Manufacturing of lead, zinc and tin products and alloys" },
+                { code: "24204", desc: "Manufacturing of chrome, manganese and nickel products alloys" },
+                { code: "24205", desc: "Production and refining of precious metals (such as gold, silver platinum etc.) and alloys" },
+                { code: "24209", desc: "Manufacture of other non-ferrous metals n.e.c." },
+                { code: "24311", desc: "Manufacture of tubes, pipes and hollow profiles and of tube or pipe fittings of cast-iron/cast-steel" },
+                { code: "24319", desc: "Manufacture of other iron and steel casting and products thereof" },
+                { code: "24320", desc: "Casting of non-ferrous metals" }
+            ],
+            25: [
+                { code: "25111", desc: "Manufacture of doors, windows and their frames, shutters and rolling shutters, gates and similar articles used on buildings" },
+                { code: "25112", desc: "Manufacture of metal frameworks or skeletons for construction and parts thereof (flowers, masts, trusses, bridges etc.)" },
+                { code: "25113", desc: "Manufacture of industrial frameworks in metal (frameworks for blast furnaces, lifting and handling equipment etc.)" },
+                { code: "25119", desc: "Manufacture of other structural metal products" },
+                { code: "25121", desc: "Manufacture of metal containers for compressed or liquefied gas" },
+                { code: "25122", desc: "Manufacture of metal reservoirs, tanks and similar containers" },
+                { code: "25123", desc: "Manufacture of central heating boilers and radiators and parts and accessories thereof" },
+                { code: "25129", desc: "Manufacture of other containers n.e.c." },
+                { code: "25131", desc: "Manufacture of steam or other vapour generating boilers and hot water boilers other than central heating boilers" },
+                { code: "25132", desc: "Manufacture of nuclear reactors, except isotope separators" },
+                { code: "25133", desc: "Manufacture of auxiliary plant for use with steam generators (condensers, economizers, superheaters, steam collectors and accumulators)" },
+                { code: "25139", desc: "Manufacture of other steam generators (except central heating hot water boilers), n.e.c." },
+                { code: "25200", desc: "Manufacture of weapons and ammunition" },
+                { code: "25910", desc: "Forging, pressing, stamping and roll-forming of metal; powder metallurgy" },
+                { code: "25920", desc: "Machining; treatment and coating of metals" },
+                { code: "25931", desc: "Manufacture of cutlery such as knives, forks, spoons, cleavers, choppers, razors, razor blades, scissors, hair clippers etc." },
+                { code: "25932", desc: "Manufacture of hand tools (non-power-driven) for agricultural/horticulture/forestry" },
+                { code: "25933", desc: "Manufacture of hand tools such as pliers, screwdrivers, press tools, blacksmiths' tools, drills, punches, milling cutters etc." },
+                { code: "25934", desc: "Manufacture of padlocks, locks, keys, hinges and the like, hardware for buildings, furniture, vehicles etc." },
+                { code: "25935", desc: "Manufacture of general hardware (saws and sawblades, including circular sawblades and chainsaw blades, moulding boxes, vices, clamps etc.)" },
+                { code: "25991", desc: "Manufacture of metal fasteners (nails, rivets, tacks, pins, staples, washers and similar non-threaded products and nuts, bolts, screws and other threaded products)" },
+                { code: "25992", desc: "Manufacture of containers such as tins and cans for food products and boxes" },
+                { code: "25993", desc: "Manufacture of metal cable and other articles made of wire (except for electric transmission)" },
+                { code: "25994", desc: "Manufacture of metal household articles (plates, saucers, pots, kettles, saucepans, frying pans and other non-electrical utensils, small hand-operated kitchen appliances and accessories)" },
+                { code: "25995", desc: "Manufacture of metal sanitaryware such as baths, sinks, washbasins and similar articles" },
+                { code: "25996", desc: "Manufacture of reinforced safes, vaults, strongroom doors, gates and metal goods for office use (other than office furniture) and other purposes" },
+                { code: "25999", desc: "Manufacture of other fabricated metal products n.e.c." }
+            ],
+            26: [
+                { code: "26101", desc: "Manufacture of electronic capacitors, resistors, chokes, coils, trasformers (electronic) and similar components" },
+                { code: "26102", desc: "Manufacture of electron tubes, diodes, transistors and related discrete devices" },
+                { code: "26103", desc: "Manufacture of integrated circuits (analog, digital or hybrid)" },
+                { code: "26104", desc: "Manufacture of bare printed circuit boards, loading of components onto printed circuit boards; manufacture of interface cards (e.g. sound, video, controllers, network, modems)" },
+                { code: "26105", desc: "Manufacture of display components (plasma, polymer, LCD, LED)" },
+                { code: "26106", desc: "Manufacture of printer cables, monitor cables, USB cables, connectors etc." },
+                { code: "26107", desc: "Manufacture of microprocessors" },
+                { code: "26109", desc: "Manufacture of other electronic components n.e.c" },
+                { code: "26201", desc: "Manufacture of desktop computers, laptop computers, hand-held computers (e.g. PDA), mainframe computers and computer servers" },
+                { code: "26202", desc: "Manufacture of magnetic and optical storage devices such as magnetic disk drives, flash drives, CD, DVD and other storage devices" },
+                { code: "26203", desc: "Manufacture of monitors, keyboards, all types of mice, joysticks, and trackball accessories, dedicated computer terminals etc." },
+                { code: "26204", desc: "Manufacture of printers, scanners, including bar code scanners, smart card readers, virtual reality helmets, computer projectors (video beamers)" },
+                { code: "26205", desc: "Manufacture of computer terminals, like automatic teller machines (ATM's), point-of-sale (POS) terminals not mechanically operated" },
+                { code: "26209", desc: "Manufacture of computers and peripheral equipment n.e.c." },
+                { code: "26301", desc: "Manufacture of radio and television studio and broadcasting equipment, including television cameras" },
+                { code: "26302", desc: "Manufacture of telephone and facsimile equipment, including telephone answering machines, PBX" },
+                { code: "26303", desc: "Manufacture of data communications equipment, such as bridges, routers, and gateways" },
+                { code: "26304", desc: "Manufacture of cable television equipment, transmitting and receiving antenna including dish, VSAT" },
+                { code: "26305", desc: "Manufacture of pagers, cellular phones and other mobile communication equipment" },
+                { code: "26309", desc: "Manufacture of other communication equipments n.e.c." },
+                { code: "26441", desc: "Manufacture of televisions, television monitors and displays" },
+                { code: "26442", desc: "Manufacture video cassette recorders and duplicating equipment" },
+                { code: "26443", desc: "Manufacture of audio recording and duplicating systems" },
+                { code: "26444", desc: "Manufacture of radio receivers" },
+                { code: "26445", desc: "Manufacture of stereo equipment, speaker systems, amplifiers for musical instruments and public address systems, microphones, karaoke machines, headphones (e.g. radio, stereo, computer)" },
+                { code: "26446", desc: "Manufacture of CD and DVD players" },
+                { code: "26449", desc: "Manufacture of other electronic consumer goods n.e.c. (this includes non-television video camera)" },
+                { code: "26511", desc: "Manufacture of physical properties testing and inspection equipment" },
+                { code: "26512", desc: "Manufacture of automotive emissions testing equipment" },
+                { code: "26513", desc: "Manufacture of consumption meters for electricity, water or gas, flow meters and counting meters" },
+                { code: "26514", desc: "Manufacture of meteorological instruments" },
+                { code: "26515", desc: "Manufacture of radar equipment, GPS devices, search, detection, navigation, aeronautical and nautical equipment" },
+                { code: "26516", desc: "Manufacture of laboratory analytical instruments and miscellaneous laboratory apparatus for measuring and testing such as scales, balances, incubators etc." },
+                { code: "26517", desc: "Manufacture of industrial process control equipment" },
+                { code: "26519", desc: "Manufacture of other measuring n.e.c." },
+                { code: "26521", desc: "Manufacture of watches and clocks, including instrument panel clocks (except time-recording equipment)" },
+                { code: "26522", desc: "Manufacture of components for clocks and watches (springs, jewels, dials, hands, plates, bridges and other parts); watch and clock cases, including cases of precious metals" },
+                { code: "26523", desc: "Manufacture of time-recording equipments such as time-clock, parking meters etc." },
+                { code: "26529", desc: "Manufacture of other watches and clocks n.e.c." },
+                { code: "26600", desc: "Manufacture of irradiation, electromedical and electrotherapeutic equipment" },
+                { code: "26700", desc: "Manufacture of optical instruments and equipment" },
+                { code: "26800", desc: "Manufacture of magnetic and optical media" }
+            ],
+            27: [
+                { code: "27101", desc: "Manufacture of power generators (except battery charging alternators for internal combustion engines), motor generator sets (except turbine generator set units)" },
+                { code: "27102", desc: "Manufacture of electric power distribution transformers, arc-welding transformers, fluorescent ballasts, transmission and distribution voltage regulators" },
+                { code: "27103", desc: "Manufacture of electric motors (except internal combustion engine starting motors)" },
+                { code: "27104", desc: "Manufacture of electricity distribution and control apparatus (electrical apparatus for switching or protecting electrical circuits (e.g. switches, fuses, voltage limiters, surge suppressors, junction boxes etc.) for a voltage exceeding 1000 volts; similar apparatus (including relays, sockets etc.) for a voltage not exceeding 1000 volts; boards, panels, consoles, cabinets and other bases equipped with two or more of the above apparatus for electricity control or distribution of electricity including power capacitors.)" },
+                { code: "27201", desc: "Manufacture of primary cells and primary batteries nd rechargeable batteries, cells containing manganese oxide, mercuric oxide silver oxide or other material" },
+                { code: "27202", desc: "Manufacture of electric accumulator incuding parts thereof (separators, containers, covers)" },
+                { code: "27310", desc: "Manufacture of fibre optic cables for data transmission or live transmission of images" },
+                { code: "27320", desc: "Manufacture of other electronic and electric wires and cables (insulated wire and cable made of steel, copper, aluminium)" },
+                { code: "27331", desc: "Manufacture of switch, switch box, lamp holders, lugs etc." },
+                { code: "27339", desc: "Manufacture of other wiring devices and fittings n.e.c." },
+                { code: "27400", desc: "Manufacture of electric lighting equipment" },
+                { code: "27501", desc: "Manufacture of domestic electric appliances such as refrigerators, washing machines, vacuum cleaners, mixers, grinders etc." },
+                { code: "27502", desc: "Manufacture of domestic electrothermic appliances such as electric water heaters, space heaters, irons, ovens, toasters, microwave ovens etc" },
+                { code: "27503", desc: "Manufacture of electric fans (except exhaust fans)" },
+                { code: "27504", desc: "Manufacture of domestic non-electric cooking and heating equipment such as non-electric space heaters, cooking ranges, grates, stoves, water heaters, cooking appliances, plate warmers" },
+                { code: "27509", desc: "Manufacture of other domestic appliances n.e.c." },
+                { code: "27900", desc: "Manufacture of other electrical equipment" }
+            ],
+            28: [
+                { code: "28110", desc: "Manufacture of engines and turbines, except aircraft, vehicle and cycle engines" },
+                { code: "28120", desc: "Manufacture of fluid power equipment" },
+                { code: "28131", desc: "Manufacture of hand pumps" },
+                { code: "28132", desc: "Manufacture of other pumps, compressors, taps and valves etc." },
+                { code: "28140", desc: "Manufacture of bearings, gears, gearing and driving elements" },
+                { code: "28150", desc: "Manufacture of ovens, furnaces and furnace burners" },
+                { code: "28161", desc: "Manufacture of lifts, escalators and moving walkways" },
+                { code: "28162", desc: "Manufacture of other lifting and handling equipment and parts thereof" },
+                { code: "28170", desc: "Manufacture of office machinery and equipment" },
+                { code: "28180", desc: "Manufacture of power-driven hand tools" },
+                { code: "28191", desc: "Manufacture of refrigerating or freezing equipment f industrial use, including assemblies of major components" },
+                { code: "28192", desc: "Manufacture of air-conditioning machines, including motor vehicles air-conditioners" },
+                { code: "28193", desc: "Manufacture of fire extinguishers and other equipment for projecting, dispersing or spraying liquids or powders whether or not hand-operated, including sand blasting machines, stream cleaning machines etc." },
+                { code: "28194", desc: "Manufacture of weighing machinery (other than sensitive laboratory balances)" },
+                { code: "28195", desc: "Manufacture of filtering and purifying machinery or apparatus for liquids and gases" },
+                { code: "28199", desc: "Manufacture of other general purpose machinery n.e.c. ( fans intended for industrial applications, exhaust hoods for commercial, laboratory or industrial use; calendering or other rolling machines other than for metals or glass; gaskets and similar joints made of a combination of materials or layers of the same material and other general purpose machinery including manufacture of parts and accessories for general purpose machinery and equipment.)" },
+                { code: "28211", desc: "Manufacture of tractors used in agriculture and forestry" },
+                { code: "28212", desc: "Manufacture of ploughs, manure spreaders, seeders, harrows and similar agricultural machinery for soil preparation, planting or fertilizing, harvesting or threshing machinery" },
+                { code: "28213", desc: "Manufacture of spraying machinery for agricultural use" },
+                { code: "28219", desc: "Manufacture of other agricultural and forestry machinery n.e.c." },
+                { code: "28221", desc: "Manufacture of machine tools for turning, drilling, milling, shaping, planning, boring, grinding etc." },
+                { code: "28222", desc: "Manufacture of electroplating machinery" },
+                { code: "28223", desc: "Manufacture of parts and accessories for the machine tools listed above" },
+                { code: "28229", desc: "Manufacture of metal-forming machinery and machine tools n.e.c" },
+                { code: "28230", desc: "Manufacture of machinery for metallurgy" },
+                { code: "28241", desc: "Manufacture of continuous-action elevators and conveyors for underground use" },
+                { code: "28242", desc: "Manufacture of boring, cutting, sinking and tunnelling machinery (whether or not for underground use)" },
+                { code: "28243", desc: "Manufacture of earth-moving machinery (bulldozers, angle-dozers, graders, scrapers, levellers, mechanical shovels, shovel loaders, off-road dumping trucks etc.)" },
+                { code: "28244", desc: "Manufacture of tracklaying tractors and tractors used in construction or mining" },
+                { code: "28245", desc: "Manufacture of concrete and mortar mixers, piledrivers and pile-extractors, mortar spreaders, bitumen spreaders, concrete surfacing machinery" },
+                { code: "28246", desc: "Manufacture of parts and accessories for machinery/equipment used by construction and mining industries" },
+                { code: "28249", desc: "Manufacture of other machinery for mining, quarrying and construction n.e.c." },
+                { code: "28251", desc: "Manufacture of machinery for the dairy industry" },
+                { code: "28252", desc: "Manufacture of machinery for the grain milling industry" },
+                { code: "28253", desc: "Manufacture of presses, crushers etc. used to make wine, cider, fruit juices etc." },
+                { code: "28254", desc: "Manufacture of machinery for the bakery industry or for making macaroni, noodles, pasta etc." },
+                { code: "28255", desc: "Manufacture of machinery for the extraction or preparation of animal or vegetable fats or oils" },
+                { code: "28256", desc: "Manufacture of machinery for the preparation of tobacco and for the making of cigarettes or cigars, or for pipe or chewing tobacco or snuff" },
+                { code: "28259", desc: "Manufacture of other machinery for the industrial preparation or manufacture of food or drink n.e.c. (including tea or coffee making machines)" },
+                { code: "28261", desc: "Manufacture of machinery for preparation of textile fibers, spinning machines, machines for preparing textile yarns, weaving machines (looms), including hand looms, knitting machines" },
+                { code: "28262", desc: "Manufacture of textile printing machinery" },
+                { code: "28263", desc: "Manufacture of machinery for washing, bleaching, dyeing, dressing, finishing coating or impregnating textile fabrics, machines for reeling, unreeling, folding, cutting or pinking textile fabrics, and similar machinery for fabric processing" },
+                { code: "28264", desc: "Manufacture of ironing machines, commercial washing and drying machines, dry-cleaning machines and other laundry machinery" },
+                { code: "28265", desc: "Manufacture of sewing machines, sewing machine heads and sewing machine needles (whether or not for household use)" },
+                { code: "28266", desc: "Manufacture of machinery for preparing, tanning or working hides, skins or leather, machinery for making or repairing footwear or other articles of hides, skins, leather or fur skins" },
+                { code: "28269", desc: "Manufacture of other machinery for textiles, apparel and leather production n.e.c." },
+                { code: "28291", desc: "Manufacture of machinery for making paper pulp, paper, paperboard and articles of paper board" },
+                { code: "28292", desc: "Manufacture of machinery for working soft rubber or plastics or for the manufacture of products of these materials" },
+                { code: "28293", desc: "Manufacture of printing and bookbinding machines and machines for activities supporting printing on a variety of materials (other than textiles)" },
+                { code: "28299", desc: "Manufacture of other special-purpose machinery n.e.c." }
+            ],
+            29: [
+                { code: "29101", desc: "Manufacture of passenger cars" },
+                { code: "29102", desc: "Manufacture of commercial vehicles such as vans, lorries, over-the-road tractors for semi-trailers etc." },
+                { code: "29103", desc: "Manufacture of chassis fitted with engines for the motor vehicles included in this class" },
+                { code: "29104", desc: "Manufacture of motor vehicle engines" },
+                { code: "29109", desc: "Manufacture of motor vehicles n.e.c." },
+                { code: "29201", desc: "Manufacture of bodies, including cabs for motor vehicles" },
+                { code: "29202", desc: "Manufacture of trailers and semi-trailers for transport of goods or passengers" },
+                { code: "29209", desc: "Manufacture of other attachments to motor vehicles n.e.c." },
+                { code: "29301", desc: "Manufacture of diverse parts and accessories for motor vehicles sucs as brakes, gearboxes, axles, road wheels, suspension shock absorbers, radiators, silencers, exhaust pipes, catalysers, clutches, steering wheels, steering columns and steering boxes etc." },
+                { code: "29302", desc: "Manufacture of parts and accessories of bodies for motor vehicles such as safety belts, airbags, doors, bumpers" },
+                { code: "29303", desc: "Manufacture of car seats" },
+                { code: "29304", desc: "Manufacture of motor vehicle electrical equipment, such as generators, alternators, spark plugs, ignition wiring harnesses, power window and door systems, assembly of purchased gauges into instrument panels, voltage regulators, etc." }
+            ],
+            30: [
+                { code: "30111", desc: "Building of commercial vessels: passenger vessels, ferry-boats, cargo ships, tankers, tugs, hovercraft (except recreation-type hovercraft) etc." },
+                { code: "30112", desc: "Building of warships and scientific investigation ships etc." },
+                { code: "30113", desc: "Building of fishing boats and fish-processing factory vessels" },
+                { code: "30114", desc: "Construction of floating or submersible drilling platforms" },
+                { code: "30115", desc: "Construction of floating structures ( floating docks, pontoons, coffer-dams, floating landing stages, buoys, floating tanks, barges, lighters, floating cranes, non-recreational inflatable rafts etc.)" },
+                { code: "30120", desc: "Building of pleasure and sporting boats" },
+                { code: "30201", desc: "Manufacture of electric, diesel, steam and other rail locomotives" },
+                { code: "30202", desc: "Manufacture of self-propelled railway or tramway coaches, vans and trucks, maintenance or service vehicles" },
+                { code: "30203", desc: "Manufacture of railway or tramway rolling stock, not self-propelled (passenger coaches, goods vans tank wagons, self-discharging vans and wagons, workshop vans, crane vans, tenders etc." },
+                { code: "30204", desc: "Manufacture of specialized parts of railway or tramway locomotives or of rolling stock (bogies, axles and wheels, brakes and parts of brakes; hooks and coupling devices, buffers and buffer parts; shock absorbers; wagon and locomotive frames; bodies; corridor connections etc.)" },
+                { code: "30205", desc: "Manufacture of mechanical and electro-mechanical signalling safety and traffic control equipment for railways, tramways, inland waterways, roads, parking facilities, airfields etc." },
+                { code: "30206", desc: "Manufacture of mining locomotives and mining rail cars" },
+                { code: "30301", desc: "Manufacture of airplanes" },
+                { code: "30302", desc: "Manufacture of helicopters" },
+                { code: "30303", desc: "Manufacture of gliders, hang-gliders, dirigibles and hot air balloons and other non-powered aircraft" },
+                { code: "30304", desc: "Manufacture of spacecraft and launch vehicles, satellites, planetary probes, orbital stations, shuttles, intercontinental ballistic (ICBM) and similar missiles" },
+                { code: "30305", desc: "Manufacture of parts and accessories of the aircraft and spacecraft of this class (major assemblies such as fuselages, wings, doors, control surfaces, landing gear, fuel tanks, nacelles, airscrews, helicopter rotors and propelled rotor blades, motors and engines of a kind typically found on aircraft, parts of turbojets and turbopropellers for aircraft, aircraft seats etc. and other specialised parts of spacecraft)" },
+                { code: "30400", desc: "Manufacture of weapons and ammunition" },
+                { code: "30911", desc: "Manufacture of motorcycles, scooters, mopeds etc. and their engine" },
+                { code: "30912", desc: "Manufacture of three-wheelers and their engine" },
+                { code: "30913", desc: "Manufacture of parts and accessories of three wheelers and motorcycles including side cars" },
+                { code: "30921", desc: "Manufacture of non-motorized bicycles and other cycles, including cycle-rickshaws, (delivery) tricycles, tandems, children's bicycles and tricycles, baby carriages" },
+                { code: "30922", desc: "Manufacture of invalid carriages with or without motor" },
+                { code: "30923", desc: "Manufacture of parts and accessories for bicycles, cycle -rickshaws and invalid carriages" },
+                { code: "30991", desc: "Manufacture of vehicles drawn by animals" },
+                { code: "30999", desc: "Manufacture of other transport equipments n.e.c. such as pushcarts, handcarts etc" }
+            ],
+            31: [
+                { code: "31001", desc: "Manufacture of furniture made of wood" },
+                { code: "31002", desc: "Manufacture of furniture made of cane & reed" },
+                { code: "31003", desc: "Manufacture of furniture primarily of metal" },
+                { code: "31004", desc: "Manufacture of furniture primarily of plastic" },
+                { code: "31005", desc: "Manufacture of mattresses and pillows" },
+                { code: "31009", desc: "Manufacture of other furniture n.e.c." }
+            ],
+            32: [
+                { code: "32111", desc: "Manufacture of jewellery of gold, silver and other precious or base metal metal clad with precious metals or precious or semi-precious stones, or of combinations of precious metal and precious or semi-precious stones or of other materials" },
+                { code: "32112", desc: "Working of diamonds and other precious and semi-precious stones including the working of industrial quality stones and synthetic or reconstructed precious or semi-precious stones" },
+                { code: "32113", desc: "Production of worked pearls" },
+                { code: "32114", desc: "Manufacture of coins, including coins for use as legal tender, whether or not of precious metal" },
+                { code: "32119", desc: "Manufacture of other articles of gold, silver and other precious and semi precious metal and stone" },
+                { code: "32120", desc: "Manufacture of imitation jewellery and related articles" },
+                { code: "32201", desc: "Manufacture of stringed instruments (non-electronic)" },
+                { code: "32202", desc: "Manufacture of wind instruments, accordions, harmonium and similar instruments and mouth organs" },
+                { code: "32203", desc: "Manufacture of percussion musical instruments" },
+                { code: "32204", desc: "Manufacture of musical instruments, the sound of which is produced electronically" },
+                { code: "32209", desc: "Manufacture of other musical instruments n.e.c." },
+                { code: "32300", desc: "Manufacture of sports goods" },
+                { code: "32401", desc: "Manufacture of dolls and toy animals" },
+                { code: "32402", desc: "Manufacture of wheeled toys designed to be ridden, including plastic bicycles and tricycles" },
+                { code: "32403", desc: "Manufacture of pin-tables, coin-operated games, billiards, special tables for casino games, etc." },
+                { code: "32404", desc: "Manufacture of playing cards" },
+                { code: "32405", desc: "Manufacture of electronic games" },
+                { code: "32409", desc: "Manufacture of other games and toys n.e.c." },
+                { code: "32501", desc: "Manufacture of dental fillings and cements (except denture adhesive or cement), dental wax and other dental plaster preparations; manufacture of dental laboratory furnaces, dental instruments, artificial teeth, bridges, etc., made in dental labs" },
+                { code: "32502", desc: "Manufacture of laboratory apparatus (laboratory ultrasonic cleaning machinery, laboratory sterilizers, laboratory type distilling apparatus, laboratory centrifuges etc.)" },
+                { code: "32503", desc: "Manufacture of medical, surgical, dental or veterinary furniture such as operating tables, examination tables, dentists' chairs etc." },
+                { code: "32504", desc: "Manufacture of bone plates and screws, syringes, needles, catheters, cannulae, etc." },
+                { code: "32505", desc: "Manufacture of measuring instruments suc as thermometers etc." },
+                { code: "32506", desc: "Manufacture of orthopedic and prosthetic devices" },
+                { code: "32507", desc: "Manufacture of ophthalmic goods, eyeglasses, sunglasses, lenses ground to prescription, contact lenses, safety goggles etc." },
+                { code: "32509", desc: "Manufacture of other medical and dental instruments n.e.c." },
+                { code: "32901", desc: "Manufacture of stationary articles such as pens and pencils of all kinds whether or not mechanical, pencil leads, date, sealing or numbering stamps, hand-operated devices for printing or embossing labels, hand printing sets, prepared typewriter ribbons and inked pads, globes etc." },
+                { code: "32902", desc: "Manufacture of protective safety equipment (fire-resistant and protective safety clothing, linemen's safety belts and other belts for occupational use, cork life preservers, plastics hard hats and other personal safety equipment of plastics, fire-fighting protection suits, metal safety headgear and other metal personal safety devices, gas masks etc.)" },
+                { code: "32903", desc: "Manufacture of umbrellas, sun-umbrellas, walking sticks, seat-stick" },
+                { code: "32904", desc: "Manufacture of articles of personal use such as cigarette lighters, smoking pipes, combs, hair slides, scent sprays, vacuum flasks and other vacuum vessels for personal or household use, wigs, false beards, eyebrows etc." },
+                { code: "32909", desc: "Manufacture of other articles n.e.c." }
+            ],
+            33: [
+                { code: "33111", desc: "Repair and maintenance of structural products" },
+                { code: "33112", desc: "Repair and maintenance of pipes and pipelines" },
+                { code: "33113", desc: "Repair and maintenance of metal tanks, reservoirs, containers, steel shipping drums etc." },
+                { code: "33114", desc: "Repair and maintenance of steam or other vapour generators and auxiliary plant for use with steam generators such as condensers, economizers, superheaters, steam collectors and accumulators" },
+                { code: "33119", desc: "Repair and maintenance of other fabricated metal products" },
+                { code: "33121", desc: "Repair and maintenance of engines and turbines excluding aircraft, vehicle and cycle engines" },
+                { code: "33122", desc: "Repair and maintenance of pumps and related equipment, fluid power equipment, valves" },
+                { code: "33123", desc: "Repair and maintenance of metal cutting and metal forming machine tools and accessories, power-driven hand-tools and other machine tools" },
+                { code: "33124", desc: "Repair and maintenance of agricultural machinery and forestry and logging machinery including agricultural tractors" },
+                { code: "33125", desc: "Repair and maintenance of mining, construction, and oil and gas field machinery; metallurgy machinery" },
+                { code: "33126", desc: "Repair and maintenance of food, beverage, and tobacco processing machinery" }
+            ]
+        };
+
+        // Page navigation functions
+        function showNicPage(division, divisionName) {
+            currentDivision = division;
+            currentDivisionName = divisionName;
+            document.getElementById('division-name').textContent = divisionName;
+            document.getElementById('division-page').classList.add('hidden');
+            document.getElementById('nic-page').classList.remove('hidden');
+            
+            // Populate NIC codes
+            const nicList = document.getElementById('nic-list');
+            nicList.innerHTML = '';
+            
+            if (nicData[division]) {
+                nicData[division].forEach(nic => {
+                    const nicItem = document.createElement('div');
+                    nicItem.className = 'nic-item';
+                    nicItem.innerHTML = `
+                        <span class="nic-code">${nic.code}</span>
+                        <span class="nic-desc">${nic.desc}</span>
+                    `;
+                    nicItem.onclick = () => selectNic(nic.code);
+                    nicList.appendChild(nicItem);
+                });
+            }
+        }
+
+        function showDivisionPage() {
+            document.getElementById('nic-page').classList.add('hidden');
+            document.getElementById('division-page').classList.remove('hidden');
+        }
+
+        function selectNic(nicCode) {
+            selectedNicCode = nicCode;
+            document.getElementById('nic-code').value = nicCode;
+            document.getElementById('division-name-hidden').value = currentDivisionName;
+            document.getElementById('nic-page').classList.add('hidden');
+            document.getElementById('company-page').classList.remove('hidden');
+        }
+
+        function showNicPageFromCompany() {
+            document.getElementById('company-page').classList.add('hidden');
+            document.getElementById('nic-page').classList.remove('hidden');
+        }
+
+        function generateDocuments() {
+            // Here you would implement the document generation logic
+            alert(`Documents will be generated for NIC ${selectedNicCode}`);
+            // In a real implementation, this would:
+            // 1. Collect all form data
+            // 2. Generate Word/PDF documents
+            // 3. Offer download links
+        }
+
+        // File upload display
+        document.getElementById('logo-upload').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+            document.getElementById('file-name').textContent = fileName;
+        });
+
+        // Search functionality
+        document.getElementById('nic-search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const nicItems = document.querySelectorAll('.nic-item');
+            
+            nicItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+
+
+        // Form submission handler
+        document.getElementById('document-form').addEventListener('submit', function(e) {
+            // Validate form fields if needed
+            if (!selectedNicCode) {
+                alert('Please select a NIC code first');
+                e.preventDefault();
+                return;
+            }
+            
+            // You can add additional validation here if needed
+            // The form will submit to your Django view which handles document generation
+        });
+    </script>
+</body>
+</html> 
