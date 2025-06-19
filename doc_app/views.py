@@ -548,4 +548,5 @@ def generate_documents(request):
         logger.exception("Error generating combined document")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+    
 
